@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="https://jakarta.ee/xml/ns/jakartaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee
+         https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
+         version="6.0">
+
+    <display-name>MedVault</display-name>
+
+    <!-- RegisterServlet -->
+    <servlet>
+        <servlet-name>RegisterServlet</servlet-name>
+        <servlet-class>com.medvault.RegisterServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>RegisterServlet</servlet-name>
+        <url-pattern>/register</url-pattern>
+    </servlet-mapping>
+
+    <!-- LoginServlet -->
+    <servlet>
+        <servlet-name>LoginServlet</servlet-name>
+        <servlet-class>com.medvault.LoginServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>LoginServlet</servlet-name>
+        <url-pattern>/login</url-pattern>
+    </servlet-mapping>
+
+    <!-- DashboardServlet -->
+    <servlet>
+        <servlet-name>DashboardServlet</servlet-name>
+        <servlet-class>com.medvault.DashboardServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>DashboardServlet</servlet-name>
+        <url-pattern>/dashboard</url-pattern>
+    </servlet-mapping>
+
+    <!-- DoctorDashboardServlet -->
+    <servlet>
+        <servlet-name>DoctorDashboardServlet</servlet-name>
+        <servlet-class>com.medvault.DoctorDashboardServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>DoctorDashboardServlet</servlet-name>
+        <url-pattern>/doctorDashboard</url-pattern>
+    </servlet-mapping>
+
+    <!-- ReceptionistDashboardServlet -->
+    <servlet>
+        <servlet-name>ReceptionistDashboardServlet</servlet-name>
+        <servlet-class>com.medvault.ReceptionistDashboardServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ReceptionistDashboardServlet</servlet-name>
+        <url-pattern>/receptionistDashboard</url-pattern>
+    </servlet-mapping>
+
+    <!-- BookAppointmentServlet -->
+    <servlet>
+        <servlet-name>BookAppointmentServlet</servlet-name>
+        <servlet-class>com.medvault.BookAppointmentServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>BookAppointmentServlet</servlet-name>
+        <url-pattern>/bookAppointment</url-pattern>
+    </servlet-mapping>
+
+    <!-- ProfileServlet -->
+    <servlet>
+        <servlet-name>ProfileServlet</servlet-name>
+        <servlet-class>com.medvault.ProfileServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ProfileServlet</servlet-name>
+        <url-pattern>/profile</url-pattern>
+    </servlet-mapping>
+
+    <!-- LogoutServlet -->
+    <servlet>
+        <servlet-name>LogoutServlet</servlet-name>
+        <servlet-class>com.medvault.LogoutServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>LogoutServlet</servlet-name>
+        <url-pattern>/logout</url-pattern>
+    </servlet-mapping>
+
+    <!-- AppointmentsServlet -->
+    <servlet>
+        <servlet-name>AppointmentsServlet</servlet-name>
+        <servlet-class>com.medvault.AppointmentsServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AppointmentsServlet</servlet-name>
+        <url-pattern>/appointments</url-pattern>
+    </servlet-mapping>
+
+    <!-- CancelAppointmentServlet -->
+    <servlet>
+        <servlet-name>CancelAppointmentServlet</servlet-name>
+        <servlet-class>com.medvault.CancelAppointmentServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>CancelAppointmentServlet</servlet-name>
+        <url-pattern>/cancelAppointment</url-pattern>
+    </servlet-mapping>
+
+    <!-- PrescriptionsServlet -->
+    <servlet>
+        <servlet-name>PrescriptionsServlet</servlet-name>
+        <servlet-class>com.medvault.PrescriptionsServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>PrescriptionsServlet</servlet-name>
+        <url-pattern>/prescriptions</url-pattern>
+    </servlet-mapping>
+
+    <!-- AddPrescriptionServlet -->
+    <servlet>
+        <servlet-name>AddPrescriptionServlet</servlet-name>
+        <servlet-class>com.medvault.AddPrescriptionServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AddPrescriptionServlet</servlet-name>
+        <url-pattern>/addPrescription</url-pattern>
+    </servlet-mapping>
+
+    <!-- PatientsServlet -->
+    <servlet>
+        <servlet-name>PatientsServlet</servlet-name>
+        <servlet-class>com.medvault.PatientsServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>PatientsServlet</servlet-name>
+        <url-pattern>/patients</url-pattern>
+    </servlet-mapping>
+
+    <!-- PrescriptionDownloadServlet -->
+    <servlet>
+        <servlet-name>PrescriptionDownloadServlet</servlet-name>
+        <servlet-class>com.medvault.PrescriptionDownloadServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>PrescriptionDownloadServlet</servlet-name>
+        <url-pattern>/downloadPrescription</url-pattern>
+    </servlet-mapping>
+
+    <!-- Welcome file -->
+    <welcome-file-list>
+        <welcome-file>index.jsp</welcome-file>
+    </welcome-file-list>
+
+</web-app>

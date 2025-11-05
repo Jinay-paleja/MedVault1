@@ -6,6 +6,7 @@ C:\Users\jinay\OneDrive\Desktop\MedVault1\src\main\java\com\medvault\Appointment
 C:\Users\jinay\OneDrive\Desktop\MedVault1\src\main\java\com\medvault\PrescriptionDownloadServlet.java
 C:\Users\jinay\OneDrive\Desktop\MedVault1\src\main\java\com\medvault\RegisterServlet.java
 C:\Users\jinay\OneDrive\Desktop\MedVault1\src\main\java\com\medvault\DBConnection.java
+C:\Users\jinay\OneDrive\Desktop\MedVault1\src\main\java\com\medvault\ConfirmAppointmentServlet.java
 C:\Users\jinay\OneDrive\Desktop\MedVault1\src\main\java\com\medvault\LoginServlet.java
 C:\Users\jinay\OneDrive\Desktop\MedVault1\src\main\java\com\medvault\Receptionist.java
 C:\Users\jinay\OneDrive\Desktop\MedVault1\src\main\java\com\medvault\ReceptionistDashboardServlet.java
@@ -15,6 +16,7 @@ C:\Users\jinay\OneDrive\Desktop\MedVault1\src\main\java\com\medvault\CancelAppoi
 C:\Users\jinay\OneDrive\Desktop\MedVault1\src\main\java\com\medvault\Patient.java
 C:\Users\jinay\OneDrive\Desktop\MedVault1\src\main\java\com\medvault\BookAppointmentServlet.java
 C:\Users\jinay\OneDrive\Desktop\MedVault1\src\main\java\com\medvault\DoctorDashboardServlet.java
+C:\Users\jinay\OneDrive\Desktop\MedVault1\src\main\java\com\medvault\DoctorsServlet.java
 C:\Users\jinay\OneDrive\Desktop\MedVault1\src\main\java\com\medvault\Prescription.java
 C:\Users\jinay\OneDrive\Desktop\MedVault1\src\main\java\com\medvault\PrescriptionsServlet.java
 C:\Users\jinay\OneDrive\Desktop\MedVault1\src\main\java\com\medvault\PatientsServlet.java

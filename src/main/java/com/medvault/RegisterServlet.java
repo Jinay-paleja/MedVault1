@@ -80,12 +80,13 @@ public class RegisterServlet extends HttpServlet {
                     roleStmt.setString(5, request.getParameter("institute"));
                     break;
                 case "receptionist":
-                    roleQuery = "INSERT INTO receptionists (user_id, name, phone, address) VALUES (?, ?, ?, ?)";
+                    roleQuery = "INSERT INTO receptionists (user_id, name, phone, address, doctor_id) VALUES (?, ?, ?, ?, ?)";
                     roleStmt = conn.prepareStatement(roleQuery);
                     roleStmt.setInt(1, userId);
                     roleStmt.setString(2, name);
                     roleStmt.setString(3, phone);
                     roleStmt.setString(4, request.getParameter("address"));
+                    roleStmt.setInt(5, Integer.parseInt(request.getParameter("doctorId")));
                     break;
             }
 

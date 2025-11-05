@@ -6,6 +6,7 @@ public class Receptionist {
     private String name;
     private String phone;
     private String address;
+    private int doctorId;
 
     // Constructors
     public Receptionist() {}
@@ -32,4 +33,7 @@ public class Receptionist {
 
     public String getAddress() { return address; }
     public void setAddress(String address) { this.address = address; }
+
+    public int getDoctorId() { return doctorId; }
+    public void setDoctorId(int doctorId) { this.doctorId = doctorId; }
 }

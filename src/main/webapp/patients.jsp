@@ -274,7 +274,8 @@
     <div class="header">
         <h1>MedVault</h1>
         <div class="nav">
-            <a href="doctorDashboard">Dashboard</a>
+            <% String role = (String) session.getAttribute("role"); %>
+            <a href="<%= "doctor".equals(role) ? "doctorDashboard" : "receptionistDashboard" %>">Dashboard</a>
             <a href="patients">Patients</a>
             <a href="appointments">Appointments</a>
             <a href="prescriptions">Prescriptions</a>

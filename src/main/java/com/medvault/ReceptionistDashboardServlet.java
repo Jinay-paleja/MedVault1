@@ -33,20 +33,25 @@ public class ReceptionistDashboardServlet extends HttpServlet {
             receptionistStmt.setInt(1, userId);
             ResultSet receptionistRs = receptionistStmt.executeQuery();
 
+            int associatedDoctorId = 0;
             if (receptionistRs.next()) {
                 Receptionist receptionist = new Receptionist();
                 receptionist.setId(receptionistRs.getInt("id"));
                 receptionist.setName(receptionistRs.getString("name"));
+                receptionist.setDoctorId(receptionistRs.getInt("doctor_id"));
+                associatedDoctorId = receptionist.getDoctorId();
                 request.setAttribute("receptionist", receptionist);
             }
 
-            // All Appointments
+            // Appointments for associated doctor
             String appointmentsQuery = "SELECT a.*, p.name as patient_name, d.name as doctor_name " +
                                      "FROM appointments a " +
                                      "JOIN patients p ON a.patient_id = p.id " +
                                      "JOIN doctors d ON a.doctor_id = d.id " +
+                                     "WHERE a.doctor_id = ? AND a.status <> 'cancelled' " +
                                      "ORDER BY a.appointment_date DESC, a.appointment_time DESC";
             PreparedStatement appointmentsStmt = conn.prepareStatement(appointmentsQuery);
+            appointmentsStmt.setInt(1, associatedDoctorId);
             ResultSet appointmentsRs = appointmentsStmt.executeQuery();
 
             List<Appointment> appointments = new ArrayList<>();
@@ -64,9 +69,12 @@ public class ReceptionistDashboardServlet extends HttpServlet {
             }
             request.setAttribute("appointments", appointments);
 
-            // All Patients
-            String patientsQuery = "SELECT * FROM patients";
+            // Patients associated with the doctor's appointments
+            String patientsQuery = "SELECT DISTINCT p.* FROM patients p " +
+                                 "JOIN appointments a ON p.id = a.patient_id " +
+                                 "WHERE a.doctor_id = ?";
             PreparedStatement patientsStmt = conn.prepareStatement(patientsQuery);
+            patientsStmt.setInt(1, associatedDoctorId);
             ResultSet patientsRs = patientsStmt.executeQuery();
 
             List<Patient> patients = new ArrayList<>();
@@ -81,13 +89,14 @@ public class ReceptionistDashboardServlet extends HttpServlet {
             }
             request.setAttribute("patients", patients);
 
-            // All Doctors
-            String doctorsQuery = "SELECT * FROM doctors";
+            // Only the associated doctor
+            String doctorsQuery = "SELECT * FROM doctors WHERE id = ?";
             PreparedStatement doctorsStmt = conn.prepareStatement(doctorsQuery);
+            doctorsStmt.setInt(1, associatedDoctorId);
             ResultSet doctorsRs = doctorsStmt.executeQuery();
 
             List<Doctor> doctors = new ArrayList<>();
-            while (doctorsRs.next()) {
+            if (doctorsRs.next()) {
                 Doctor doc = new Doctor();
                 doc.setId(doctorsRs.getInt("id"));
                 doc.setName(doctorsRs.getString("name"));
@@ -96,13 +105,16 @@ public class ReceptionistDashboardServlet extends HttpServlet {
             }
             request.setAttribute("doctors", doctors);
 
-            // Dashboard Summary
+            // Dashboard Summary for associated doctor
             String summaryQuery = "SELECT " +
-                                "(SELECT COUNT(*) FROM patients) as total_patients, " +
-                                "(SELECT COUNT(*) FROM appointments WHERE appointment_date = CURDATE()) as today_appointments, " +
-                                "(SELECT COUNT(*) FROM appointments WHERE status = 'pending') as pending_appointments, " +
-                                "(SELECT COUNT(*) FROM doctors) as available_doctors";
+                                "(SELECT COUNT(DISTINCT p.id) FROM patients p JOIN appointments a ON p.id = a.patient_id WHERE a.doctor_id = ?) as total_patients, " +
+                                "(SELECT COUNT(*) FROM appointments WHERE doctor_id = ? AND appointment_date = CURDATE()) as today_appointments, " +
+                                "(SELECT COUNT(*) FROM appointments WHERE doctor_id = ? AND status = 'pending') as pending_appointments, " +
+                                "1 as available_doctors";
             PreparedStatement summaryStmt = conn.prepareStatement(summaryQuery);
+            summaryStmt.setInt(1, associatedDoctorId);
+            summaryStmt.setInt(2, associatedDoctorId);
+            summaryStmt.setInt(3, associatedDoctorId);
             ResultSet summaryRs = summaryStmt.executeQuery();
 
             if (summaryRs.next()) {
@@ -111,6 +123,16 @@ public class ReceptionistDashboardServlet extends HttpServlet {
                 request.setAttribute("pendingAppointments", summaryRs.getInt("pending_appointments"));
                 request.setAttribute("availableDoctors", summaryRs.getInt("available_doctors"));
             }
+
+            // Clinic status (singleton row id=1)
+            try {
+                conn.createStatement().executeUpdate(
+                    "CREATE TABLE IF NOT EXISTS clinic_status (id INT PRIMARY KEY, status VARCHAR(16) NOT NULL)"
+                );
+                ResultSet cs = conn.createStatement().executeQuery("SELECT status FROM clinic_status WHERE id = 1");
+                String clinicStatus = cs.next() ? cs.getString("status") : "open";
+                request.setAttribute("clinicStatus", clinicStatus);
+            } catch (SQLException ignored) {}
 
         } catch (SQLException e) {
             e.printStackTrace();

@@ -21,20 +21,34 @@ public class PatientsServlet extends HttpServlet {
         Integer userId = (Integer) session.getAttribute("userId");
         String role = (String) session.getAttribute("role");
 
-        if (userId == null || !"doctor".equals(role)) {
+        if (userId == null || (!"doctor".equals(role) && !"receptionist".equals(role))) {
             response.sendRedirect("login.jsp");
             return;
         }
 
         try (Connection conn = DBConnection.getConnection()) {
-            // Get doctor ID
-            String doctorQuery = "SELECT id FROM doctors WHERE user_id = ?";
-            PreparedStatement doctorStmt = conn.prepareStatement(doctorQuery);
-            doctorStmt.setInt(1, userId);
-            ResultSet doctorRs = doctorStmt.executeQuery();
+            int doctorId = 0;
+            if ("doctor".equals(role)) {
+                // Get doctor ID
+                String doctorQuery = "SELECT id FROM doctors WHERE user_id = ?";
+                PreparedStatement doctorStmt = conn.prepareStatement(doctorQuery);
+                doctorStmt.setInt(1, userId);
+                ResultSet doctorRs = doctorStmt.executeQuery();
+                if (doctorRs.next()) {
+                    doctorId = doctorRs.getInt("id");
+                }
+            } else if ("receptionist".equals(role)) {
+                // Get associated doctor ID for receptionist
+                String receptionistQuery = "SELECT doctor_id FROM receptionists WHERE user_id = ?";
+                PreparedStatement receptionistStmt = conn.prepareStatement(receptionistQuery);
+                receptionistStmt.setInt(1, userId);
+                ResultSet receptionistRs = receptionistStmt.executeQuery();
+                if (receptionistRs.next()) {
+                    doctorId = receptionistRs.getInt("doctor_id");
+                }
+            }
 
-            if (doctorRs.next()) {
-                int doctorId = doctorRs.getInt("id");
+            if (doctorId > 0) {
 
                 // Get patients who have appointments with this doctor
                 String patientsQuery = "SELECT DISTINCT p.*, " +

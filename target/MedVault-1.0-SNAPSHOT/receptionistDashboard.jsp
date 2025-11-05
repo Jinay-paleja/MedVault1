@@ -315,10 +315,9 @@
     <div class="header">
         <h1>MedVault</h1>
         <div class="nav">
-            <a href="receptionistDashboard">Dashboard</a>
+            <a href="<%= request.getContextPath() %>/receptionistDashboard">Dashboard</a>
             <a href="patients">Patients</a>
             <a href="appointments">Appointments</a>
-            <a href="doctors">Doctors</a>
             <a href="profile">Profile</a>
             <a href="logout">Logout</a>
         </div>

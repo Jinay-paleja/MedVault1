@@ -260,6 +260,12 @@
                 <a href="prescriptions">Prescriptions</a>
                 <a href="profile">Profile</a>
                 <a href="logout">Logout</a>
+            <% } else if ("receptionist".equals(userRole)) { %>
+                <a href="receptionistDashboard">Dashboard</a>
+                <a href="patients">Patients</a>
+                <a href="appointments">Appointments</a>
+                <a href="profile">Profile</a>
+                <a href="logout">Logout</a>
             <% } else { %>
                 <a href="dashboard">Dashboard</a>
                 <a href="appointments">Appointments</a>

@@ -5,6 +5,7 @@ com\medvault\ReceptionistDashboardServlet.class
 com\medvault\Patient.class
 com\medvault\DBConnection.class
 com\medvault\Doctor.class
+com\medvault\DoctorsServlet.class
 com\medvault\RegisterServlet.class
 com\medvault\Appointment.class
 com\medvault\DoctorDashboardServlet.class
@@ -18,4 +19,5 @@ com\medvault\ProfileServlet.class
 com\medvault\PrescriptionDownloadServlet.class
 com\medvault\Prescription.class
 com\medvault\AddPrescriptionServlet.class
+com\medvault\ConfirmAppointmentServlet.class
 com\medvault\CancelAppointmentServlet.class

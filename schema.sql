@@ -41,7 +41,9 @@ CREATE TABLE receptionists (
     name VARCHAR(255) NOT NULL,
     phone VARCHAR(20),
     address TEXT,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    doctor_id INT NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (doctor_id) REFERENCES doctors(id) ON DELETE CASCADE
 );
 
 -- Appointments table

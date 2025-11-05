@@ -35,6 +35,9 @@ public class AppointmentsServlet extends HttpServlet {
             } else if ("patient".equals(role)) {
                 // Patient appointments view
                 handlePatientAppointments(request, response, conn, userId);
+            } else if ("receptionist".equals(role)) {
+                // Receptionist appointments view (same as doctor for associated doctor)
+                handleReceptionistAppointments(request, response, conn, userId);
             } else {
                 response.sendRedirect("login.jsp");
             }
@@ -134,6 +137,54 @@ public class AppointmentsServlet extends HttpServlet {
         }
         request.setAttribute("appointments", appointments);
         request.setAttribute("userRole", "patient");
+        request.getRequestDispatcher("appointments.jsp").forward(request, response);
+    }
+
+    private void handleReceptionistAppointments(HttpServletRequest request, HttpServletResponse response,
+                                              Connection conn, int userId) throws SQLException, ServletException, IOException {
+        // Get receptionist info and associated doctor
+        String receptionistQuery = "SELECT doctor_id FROM receptionists WHERE user_id = ?";
+        PreparedStatement receptionistStmt = conn.prepareStatement(receptionistQuery);
+        receptionistStmt.setInt(1, userId);
+        ResultSet receptionistRs = receptionistStmt.executeQuery();
+
+        if (!receptionistRs.next()) {
+            request.setAttribute("error", "Receptionist profile not found");
+            request.getRequestDispatcher("receptionistDashboard").forward(request, response);
+            return;
+        }
+
+        int doctorId = receptionistRs.getInt("doctor_id");
+
+        // Get all appointments for the associated doctor, grouped by date
+        String appointmentsQuery = "SELECT a.*, p.name as patient_name, p.age, p.gender " +
+                                 "FROM appointments a " +
+                                 "JOIN patients p ON a.patient_id = p.id " +
+                                 "WHERE a.doctor_id = ? " +
+                                 "ORDER BY a.appointment_date DESC, a.appointment_time DESC";
+        PreparedStatement appointmentsStmt = conn.prepareStatement(appointmentsQuery);
+        appointmentsStmt.setInt(1, doctorId);
+        ResultSet appointmentsRs = appointmentsStmt.executeQuery();
+
+        Map<String, List<Appointment>> appointmentsByDate = new HashMap<>();
+        while (appointmentsRs.next()) {
+            Appointment apt = new Appointment();
+            apt.setId(appointmentsRs.getInt("id"));
+            apt.setAppointmentDate(appointmentsRs.getDate("appointment_date"));
+            apt.setAppointmentTime(appointmentsRs.getTime("appointment_time"));
+            apt.setStatus(appointmentsRs.getString("status"));
+            apt.setPatientId(appointmentsRs.getInt("patient_id"));
+
+            String dateKey = apt.getAppointmentDate().toString();
+            request.setAttribute("patientName_" + apt.getId(), appointmentsRs.getString("patient_name"));
+            request.setAttribute("patientAge_" + apt.getId(), appointmentsRs.getInt("age"));
+            request.setAttribute("patientGender_" + apt.getId(), appointmentsRs.getString("gender"));
+
+            appointmentsByDate.computeIfAbsent(dateKey, k -> new ArrayList<>()).add(apt);
+        }
+
+        request.setAttribute("appointmentsByDate", appointmentsByDate);
+        request.setAttribute("userRole", "receptionist");
         request.getRequestDispatcher("appointments.jsp").forward(request, response);
     }
 }

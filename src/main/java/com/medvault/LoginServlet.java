@@ -42,7 +42,7 @@ public class LoginServlet extends HttpServlet {
                         response.sendRedirect("doctorDashboard");
                         break;
                     case "receptionist":
-                        response.sendRedirect("receptionistDashboard.jsp"); // Assuming we create this
+                        response.sendRedirect("receptionistDashboard");
                         break;
                     case "admin":
                         response.sendRedirect("adminDashboard.jsp"); // Assuming we create this

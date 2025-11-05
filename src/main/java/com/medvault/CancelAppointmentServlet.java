@@ -23,6 +23,29 @@ public class CancelAppointmentServlet extends HttpServlet {
             return;
         }
 
+        // If receptionist, get associated doctor
+        int associatedDoctorId = 0;
+        if ("receptionist".equals(role)) {
+            try (Connection conn = DBConnection.getConnection()) {
+                String receptionistQuery = "SELECT doctor_id FROM receptionists WHERE user_id = ?";
+                PreparedStatement receptionistStmt = conn.prepareStatement(receptionistQuery);
+                receptionistStmt.setInt(1, userId);
+                ResultSet rs = receptionistStmt.executeQuery();
+                if (rs.next()) {
+                    associatedDoctorId = rs.getInt("doctor_id");
+                } else {
+                    session.setAttribute("error", "Receptionist not found or not associated with a doctor");
+                    response.sendRedirect("receptionistDashboard");
+                    return;
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                session.setAttribute("error", "Failed to verify receptionist: " + e.getMessage());
+                response.sendRedirect("receptionistDashboard");
+                return;
+            }
+        }
+
         String idParam = request.getParameter("appointmentId");
         if (idParam == null) {
             session.setAttribute("error", "Missing appointment id");
@@ -81,6 +104,9 @@ public class CancelAppointmentServlet extends HttpServlet {
                 if (dRs.next() && dRs.getInt("id") == appointmentDoctorId) {
                     authorized = true;
                 }
+            } else if ("receptionist".equals(role)) {
+                // Receptionist can cancel any non-completed appointment
+                authorized = true;
             }
 
             if (!authorized) {
@@ -100,12 +126,24 @@ public class CancelAppointmentServlet extends HttpServlet {
             } else {
                 session.setAttribute("error", "Failed to cancel appointment");
             }
-            response.sendRedirect("appointments");
+
+            // Redirect by role
+            if ("receptionist".equals(role)) {
+                response.sendRedirect("receptionistDashboard");
+            } else if ("doctor".equals(role) || "patient".equals(role)) {
+                response.sendRedirect("appointments");
+            } else {
+                response.sendRedirect("login.jsp");
+            }
 
         } catch (SQLException e) {
             e.printStackTrace();
             session.setAttribute("error", "Failed to cancel appointment: " + e.getMessage());
-            response.sendRedirect("appointments");
+            if ("receptionist".equals(role)) {
+                response.sendRedirect("receptionistDashboard");
+            } else {
+                response.sendRedirect("appointments");
+            }
         }
     }
 }

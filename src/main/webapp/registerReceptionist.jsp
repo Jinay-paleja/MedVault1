@@ -191,6 +191,28 @@
                 <textarea id="address" name="address" required></textarea>
             </div>
 
+            <div class="form-group">
+                <label for="doctorId">Associated Doctor:</label>
+                <select id="doctorId" name="doctorId" required>
+                    <option value="">Select Doctor</option>
+                    <%@ page import="java.sql.*, com.medvault.DBConnection" %>
+                    <%
+                        try (Connection conn = DBConnection.getConnection()) {
+                            String query = "SELECT id, name, specialization FROM doctors";
+                            PreparedStatement stmt = conn.prepareStatement(query);
+                            ResultSet rs = stmt.executeQuery();
+                            while (rs.next()) {
+                    %>
+                        <option value="<%= rs.getInt("id") %>"><%= rs.getString("name") %> (<%= rs.getString("specialization") %>)</option>
+                    <%
+                            }
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+                    %>
+                </select>
+            </div>
+
             <button type="submit" class="btn">Register</button>
         </form>
 

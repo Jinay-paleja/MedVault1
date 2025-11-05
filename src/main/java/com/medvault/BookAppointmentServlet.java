@@ -19,6 +19,7 @@ public class BookAppointmentServlet extends HttpServlet {
 
         HttpSession session = request.getSession();
         Integer userId = (Integer) session.getAttribute("userId");
+        String role = (String) session.getAttribute("role");
 
         if (userId == null) {
             response.sendRedirect("login.jsp");
@@ -28,6 +29,33 @@ public class BookAppointmentServlet extends HttpServlet {
         int doctorId = Integer.parseInt(request.getParameter("doctorId"));
         Date appointmentDate = Date.valueOf(request.getParameter("appointmentDate"));
         Time appointmentTime = Time.valueOf(request.getParameter("appointmentTime") + ":00");
+
+        // If receptionist, verify they are associated with the selected doctor
+        if ("receptionist".equals(role)) {
+            try (Connection conn = DBConnection.getConnection()) {
+                String receptionistQuery = "SELECT doctor_id FROM receptionists WHERE user_id = ?";
+                PreparedStatement receptionistStmt = conn.prepareStatement(receptionistQuery);
+                receptionistStmt.setInt(1, userId);
+                ResultSet rs = receptionistStmt.executeQuery();
+                if (rs.next()) {
+                    int associatedDoctorId = rs.getInt("doctor_id");
+                    if (associatedDoctorId != doctorId) {
+                        session.setAttribute("error", "You can only book appointments for your associated doctor");
+                        response.sendRedirect("receptionistDashboard");
+                        return;
+                    }
+                } else {
+                    session.setAttribute("error", "Receptionist not found");
+                    response.sendRedirect("receptionistDashboard");
+                    return;
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                session.setAttribute("error", "Failed to verify receptionist: " + e.getMessage());
+                response.sendRedirect("receptionistDashboard");
+                return;
+            }
+        }
 
         try (Connection conn = DBConnection.getConnection()) {
             // Get patient ID
